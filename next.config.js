@@ -2,7 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    MONGODB_PASSWORD: "felixfedronic"
+    MONGODB_USERNAME: "test",
+    MONGODB_PASSWORD: "6NDMxiGIW5LMdTeQ"
   }
 }
 
