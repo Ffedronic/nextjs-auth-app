@@ -7,6 +7,16 @@ async function handler(req, res) {
 
     const { email, password } = data;
 
+    if (
+      !email ||
+      !password ||
+      !email.includes("@") ||
+      password.trim().length < 7
+    ) {
+      res.status(422).json({ message: "invalid input!" });
+      return;
+    }
+
     const client = await connectToDatabase();
 
     try {
@@ -21,7 +31,7 @@ async function handler(req, res) {
 
       client.close();
     } catch (error) {
-      res.status(400).json({ message: "invalid input" });
+      res.status(500).json({ message: "error server!" });
 
       client.close();
     }

@@ -19,13 +19,26 @@ async function createUser(email, password) {
     },
   });
 
-  if (!response.ok) {
-    swal(response.message, "error");
-  }
-
   const data = await response.json();
 
-  return data;
+  if (!response.ok) {
+    swal({
+      title: "Error !",
+      text: data.message,
+      icon: "error",
+      buttons: "Enter valid input",
+      dangerMode: true,
+    });
+  } else {
+    swal({
+      title: "Good Job !",
+      text: data.message,
+      icon: "success",
+      buttons: "Your profile",
+      dangerMode: false,
+    }).then(() => window.location.href = "/profile");
+    return data;
+  }
 }
 
 function AuthForm() {
@@ -57,15 +70,6 @@ function AuthForm() {
 
     const result = await createUser(enteredEmail, enteredPassword);
 
-    console.log(result);
-
-    swal({
-      title: "Good Job !",
-      text: result.message,
-      icon: "success",
-      buttons: "Get your profile",
-      dangerMode: false,
-    }).then(() => (window.location.href = "/profile"));
   }
 
   return (
