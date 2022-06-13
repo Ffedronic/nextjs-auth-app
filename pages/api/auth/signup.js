@@ -1,12 +1,23 @@
-import { connectToDatabase, insertNewUser } from "../../../lib/db";
+import {
+  connectToDatabase,
+  insertNewUser,
+  isExistingUser,
+} from "../../../lib/db";
 import { hashPassword } from "../../../lib/auth";
 
+/**
+ * It checks if the user is already existed in the database, if not, it creates a new user
+ * @param req - The request object.
+ * @param res - The response object.
+ * @returns a promise.
+ */
 async function handler(req, res) {
   if (req.method === "POST") {
     const data = req.body;
 
     const { email, password } = data;
 
+    /* This is a validation for the input. */
     if (
       !email ||
       !password ||
@@ -17,23 +28,36 @@ async function handler(req, res) {
       return;
     }
 
+    /* Connecting to the database. */
     const client = await connectToDatabase();
 
-    try {
-      const hashedPassword = await hashPassword(password);
+    /* Checking if the user is already existed in the database. */
+    const existingUser = await isExistingUser(client, "users", {
+      email: email,
+    });
 
-      const result = await insertNewUser(client, "users", {
-        email: email,
-        password: hashedPassword,
-      });
-
-      res.status(201).json({ message: "created user!" });
-
+    if (existingUser) {
+      res.status(422).json({ message: "user is already existed!" });
       client.close();
-    } catch (error) {
-      res.status(500).json({ message: "error server!" });
+    } else {
+      try {
+        /* Hashing the password. */
+        const hashedPassword = await hashPassword(password);
 
-      client.close();
+        /* Inserting the new user into the database. */
+        const result = await insertNewUser(client, "users", {
+          email: email,
+          password: hashedPassword,
+        });
+
+        res.status(201).json({ message: "created user!" });
+
+        client.close();
+      } catch (error) {
+        res.status(500).json({ message: "error server!" });
+
+        client.close();
+      }
     }
   }
 }
