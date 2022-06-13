@@ -3,6 +3,7 @@ import Providers from "next-auth/providers/credentials";
 import { verifyPassword } from "../../../lib/auth";
 import { connectToDatabase, isExistingUser } from "../../../lib/db";
 
+/* A function that allows you to handle signing with crendentials(email, password) */
 export default nextAuth({
   session: {
     jwt: true,
@@ -10,8 +11,10 @@ export default nextAuth({
   providers: [
     Providers({
       async authorize(credentials) {
+/* Connecting to the database. */
         const client = await connectToDatabase();
 
+        /* Checking if the user exists in the database. */
         const existingUser = await isExistingUser(client, "users", {
           email: credentials.email,
         });
@@ -21,6 +24,7 @@ export default nextAuth({
           throw new Error("No user found!");
         }
 
+       /* Checking if the password is valid. */
         const isValid = await verifyPassword(
           credentials.password,
           existingUser.password

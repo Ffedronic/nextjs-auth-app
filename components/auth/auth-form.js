@@ -75,8 +75,15 @@ function AuthForm() {
         email: enteredEmail,
         password: enteredPassword,
       });
-
-      console.log(result);
+      if(result){
+        swal({
+          title: "Good Job !",
+          text: "Your are logged!",
+          icon: "success",
+          buttons: true,
+          dangerMode: false,
+        }).then(() => (window.location.href = "/profile"))
+      }
     } else {
       try {
         const result = await createUser(enteredEmail, enteredPassword);
