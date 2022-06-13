@@ -37,7 +37,7 @@ async function createUser(email, password) {
       icon: "success",
       buttons: "Your profile",
       dangerMode: false,
-    }).then(() => (window.location.href = "/profile"));
+    }).then(() => (window.location.href = "/"));
     return data;
   }
 }
@@ -82,7 +82,7 @@ function AuthForm() {
           icon: "success",
           buttons: true,
           dangerMode: false,
-        }).then(() => (window.location.href = "/profile"))
+        }).then(() => (window.location.href = "/"))
       }
     } else {
       try {
