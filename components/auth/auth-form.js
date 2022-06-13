@@ -1,5 +1,6 @@
 import swal from "sweetalert";
 import { useState, useRef } from "react";
+import { signIn } from "next-auth/react";
 import classes from "./auth-form.module.css";
 
 /**
@@ -36,7 +37,7 @@ async function createUser(email, password) {
       icon: "success",
       buttons: "Your profile",
       dangerMode: false,
-    }).then(() => window.location.href = "/profile");
+    }).then(() => (window.location.href = "/profile"));
     return data;
   }
 }
@@ -68,8 +69,23 @@ function AuthForm() {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
-    const result = await createUser(enteredEmail, enteredPassword);
+    if (isLogin) {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: enteredEmail,
+        password: enteredPassword,
+      });
 
+      console.log(result);
+    } else {
+      try {
+        const result = await createUser(enteredEmail, enteredPassword);
+
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   return (
