@@ -1,3 +1,4 @@
+import swal from "sweetalert";
 import { useState, useRef } from "react";
 import classes from "./auth-form.module.css";
 
@@ -19,7 +20,7 @@ async function createUser(email, password) {
   });
 
   if (!response.ok) {
-    throw new Error(response.message || "Something went wrong!");
+    swal(response.message, "error");
   }
 
   const data = await response.json();
@@ -57,6 +58,14 @@ function AuthForm() {
     const result = await createUser(enteredEmail, enteredPassword);
 
     console.log(result);
+
+    swal({
+      title: "Good Job !",
+      text: result.message,
+      icon: "success",
+      buttons: "Get your profile",
+      dangerMode: false,
+    }).then(() => (window.location.href = "/profile"));
   }
 
   return (
