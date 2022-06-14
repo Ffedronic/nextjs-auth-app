@@ -1,13 +1,17 @@
 import { useRef } from "react";
 import classes from "./profile-form.module.css";
 
+function updatePassword(){
+
+}
+
 function ProfileForm() {
   const enteredNewPassword = useRef();
   const enteredOldPassword = useRef();
 
-  async function createNewPassword(oldPassword, newPassword) {
+  /* async function createNewPassword(oldPassword, newPassword) {
     const response = await fetch("/api/user/change-password", {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify({ oldPassword, newPassword }),
       "Content-type": "application/json",
     });
@@ -32,7 +36,7 @@ function ProfileForm() {
       }).then(() => (window.location.href = "/"));
       return data;
     }
-  }
+  } */
 
   async function onSubmitHandler(event) {
     event.preventDefault();
@@ -40,7 +44,21 @@ function ProfileForm() {
     const newPassword = enteredNewPassword.current.value;
     const oldPassword = enteredOldPassword.current.value;
 
-    const result = await createNewPassword(oldPassword, newPassword);
+    console.log(newPassword, oldPassword);
+
+    const response = await fetch("/api/user/changePassword", {
+      method: "PUT",
+      body: JSON.stringify({
+        newPassword,
+        oldPassword,
+      }),
+      headers: { "Content-type": "application/json" },
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+    /* const result = await createNewPassword(oldPassword, newPassword); */
   }
 
   return (

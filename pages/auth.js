@@ -13,8 +13,10 @@ export async function getServerSideProps(context) {
         destination: "/",
         permanent: false,
       },
-      props: { session },
     };
+  }
+  return{
+    props: { session },
   }
 }
 
